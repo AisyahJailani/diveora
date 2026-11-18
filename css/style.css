@@ -1,0 +1,305 @@
+/* DIVEORA - theme: Burgundy (#5a1a2e) + Gold (#c9973f)
+   Sections: 1 Base, 2 Top bar icons, 3 Cards and tables, 4 Calendar, 5 Login, 6 Footer, 7 Dashboard banner,
+             8 Side panel and top bar, 9 Customers page, 10 Articles page, 11 Cars page (maintenance), 12 Pagination, 13 Formal refinements, 14 Bootstrap recolour */
+
+/* ===== 1. Base ===== */
+:root{--brand:#5a1a2e;--gold:#c9973f;--bg:#f7f4f5;--card:#fff;--text:#2a1a21;--muted:#6e6169;--border:#e6dde1;--side-w:260px}
+[data-bs-theme=dark]{--bg:#170d12;--card:#231319;--text:#f3e9ed;--muted:#c4a8b3;--border:#3d2530}
+body{font-family:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+main{flex:1}.text-muted{color:var(--muted)!important}
+h1,h2,h3,h4,h5{letter-spacing:-.01em;font-weight:800}
+
+/* ===== 2. Top bar icons and notifications ===== */
+.nav-ic{color:#fff;border:1px solid rgba(255,255,255,.25);width:40px;height:40px;padding:0;border-radius:.6rem}
+.nav-ic:hover,.nav-ic:focus{color:var(--gold);border-color:var(--gold)}
+#nBadge{top:-6px;right:-6px;font-size:.65rem}
+.notif{width:min(360px,92vw)}.notif .item{padding:.7rem 1rem;border-bottom:1px solid var(--border);display:flex;gap:.7rem;cursor:pointer}
+.notif .item.unread{background:rgba(201,151,63,.12)}.notif .item i{color:var(--gold);font-size:1.1rem}
+/* Notification dropdown: scrollable, and full-width under the top bar on phones */
+.notif{max-height:70vh;overflow-y:auto}
+@media(max-width:575px){
+  .notif{position:fixed!important;top:62px!important;left:8px!important;right:8px!important;bottom:auto!important;width:auto!important;transform:none!important;margin:0!important}
+}
+
+/* ===== 3. Cards, buttons, forms, badges, tables ===== */
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem}
+.card-h{font-weight:800;margin-bottom:.15rem}.card-s{color:var(--muted);font-size:.82rem;margin-bottom:.8rem}
+.chart-box{position:relative;height:280px}
+.kpi{border-left:5px solid var(--gold)}.kpi .v{font-size:1.7rem;font-weight:800}.kpi i{font-size:1.5rem;color:var(--gold)}
+.page-head{display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:.5rem;margin-bottom:1.2rem}
+.btn-gold{background:var(--gold);color:var(--brand);font-weight:700;border:0}.btn-gold:hover{background:#d6a74f;color:var(--brand)}
+.btn-brand{background:var(--brand);color:#fff;font-weight:700}.btn-brand:hover{background:#7a2640;color:#fff}
+.form-control:focus,.form-select:focus,.btn:focus-visible{box-shadow:0 0 0 .2rem rgba(201,151,63,.4);border-color:var(--gold)}
+/* Status badges */
+.st-active{background:var(--gold);color:var(--brand)}.st-upcoming{background:#6d4a7a}.st-completed,.st-available{background:#64748b}
+.st-rented{background:var(--gold);color:var(--brand)}.st-maintenance,.st-cancelled{background:#b4443c}.st-paid{background:#6d4a7a}.st-pending{background:var(--gold);color:var(--brand)}.st-refunded{background:#64748b}
+/* Car cards */
+.car-card img{width:100%;display:block;aspect-ratio:2/1;object-fit:cover}.car-card{overflow:hidden;transition:transform .2s}.car-card:hover{transform:translateY(-4px)}
+.price{font-size:1.2rem;font-weight:800;color:var(--gold)}
+/* Tables */
+.table{--bs-table-bg:transparent;--bs-table-color:var(--text);--bs-table-border-color:var(--border)}
+.table thead th{color:var(--muted);font-size:.8rem;white-space:nowrap}
+
+/* ===== 4. Calendar (inside the Customers page) ===== */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.cal-dow{text-align:center;font-weight:700;font-size:.78rem;color:var(--muted)}
+.cal-cell{aspect-ratio:1/.85;border:1px solid var(--border);border-radius:.6rem;background:var(--card);color:var(--text);position:relative;font-weight:700;padding:4px 6px;text-align:left}
+.cal-cell:not(.empty):hover{border-color:var(--gold)}.cal-cell.empty{border:0;background:none}
+.cal-cell.today{border:2px solid var(--gold)}.cal-cell.sel{background:var(--brand);color:#fff}
+.cal-n{position:absolute;right:4px;bottom:3px;background:var(--gold);color:var(--brand);border-radius:99px;font-size:.68rem;padding:0 6px}
+@media(max-width:575px){.cal-cell{aspect-ratio:1/1;font-size:.75rem;padding:2px 4px}.cal-n{font-size:.6rem;padding:0 4px}}
+
+/* ===== 5. Login (centred card: brand panel + form) ===== */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem 1rem;background:var(--bg)}
+.login-card{width:100%;max-width:1000px;min-height:540px;display:grid;grid-template-columns:1fr 1fr;background:var(--card);border:1px solid var(--border);border-radius:1rem;overflow:hidden;box-shadow:0 24px 56px rgba(90,26,46,.12),0 2px 6px rgba(90,26,46,.06)}
+.login-hero{order:2;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;gap:2.5rem;padding:2.75rem;color:#fff;background:radial-gradient(120% 80% at 100% 100%,#8a2f4b 0%,rgba(138,47,75,0) 60%),linear-gradient(160deg,#5a1a2e 0%,#6c2138 100%)}
+.login-mark{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.login-brand{position:relative;display:flex;align-items:center;gap:.9rem;font-weight:700;font-size:1.3rem;letter-spacing:.16em}
+.login-copy{position:relative}
+.login-copy h1{color:#fff;font-size:2rem;font-weight:600;line-height:1.25;margin-bottom:1rem;max-width:15em}
+.login-copy p{color:#e6d3da;font-size:.95rem;line-height:1.65;max-width:34ch;margin:0}
+.login-form{display:flex;align-items:center;padding:2.75rem}
+.login-inner{width:100%;max-width:360px;margin:0 auto}
+.login-inner h2{font-size:1.65rem;font-weight:600;margin-bottom:.35rem}
+.login-small-brand{display:none;align-items:center;gap:.55rem;margin-bottom:1.75rem;font-weight:700;letter-spacing:.14em;font-size:.95rem}
+.login-form .form-label{font-size:.85rem;font-weight:500;margin-bottom:.35rem}
+.login-form .input-group-text{background:var(--bg);color:var(--muted);border-color:var(--border)}
+.login-btn{padding:.7rem 1rem}
+.login-form{position:relative}
+.theme-float{position:absolute;top:16px;left:16px;z-index:20;background:var(--card);border:1px solid var(--border);color:var(--text);width:40px;height:40px;border-radius:.5rem}
+.shake{animation:shake .4s}@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@media(max-width:767px){
+  .login-page{padding:1rem;align-items:flex-start;padding-top:4rem}
+  .login-card{grid-template-columns:1fr;min-height:0}
+  .login-hero{display:none}
+  .login-form{padding:4.5rem 1.5rem 2rem}
+  .login-small-brand{display:flex}
+}
+
+/* ===== 6. Footer, toast, accessibility ===== */
+.de-foot{background:var(--brand);color:#e0c9d1;margin-top:2rem}.de-foot a{color:#e0c9d1;text-decoration:none}.de-foot a:hover{color:var(--gold)}.de-foot h6{color:#fff}
+.de-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--brand);color:#fff;border-left:5px solid var(--gold);padding:.7rem 1.1rem;border-radius:.6rem;z-index:2000;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.de-foot address{font-style:normal}
+.foot-ic{width:38px;height:38px;border-radius:.6rem;border:1px solid rgba(255,255,255,.25);display:inline-flex;align-items:center;justify-content:center;color:#fff!important}
+.foot-ic:hover{border-color:var(--gold);color:var(--gold)!important}
+.foot-link{background:none;border:0;padding:0;color:#e0c9d1}.foot-link:hover{color:var(--gold);text-decoration:underline}
+.period .btn.active{background:var(--gold);color:var(--brand);border-color:var(--gold);font-weight:700}
+.insight i{color:var(--gold);font-size:1.2rem}
+.visually-hidden-focusable:focus{position:fixed;top:8px;left:8px;z-index:3000;background:var(--gold);color:var(--brand);padding:.5rem 1rem;border-radius:.5rem}
+/* Footer system details (middle column) */
+.foot-meta{display:flex;flex-direction:column;gap:.7rem;margin:0}
+.foot-meta dt{color:#c4a3b0;font-size:.75rem;font-weight:400;margin:0}
+.foot-meta dd{color:#fff;font-weight:600;font-size:.9rem;margin:0}
+
+/* ===== 7. Welcome banner (dashboard) ===== */
+.go-welcome{display:flex;align-items:center;justify-content:space-between;gap:1.25rem;margin-bottom:1.2rem;padding:2rem 2.25rem;min-height:140px;border-radius:1.1rem;background:linear-gradient(120deg,#5a1a2e 0%,#7a2640 100%);color:#fff;box-shadow:0 6px 18px rgba(90,26,46,.18)}
+.go-welcome h1{color:#fff;margin:0 0 .25rem;font-size:2rem}
+.go-welcome p{color:#e6d3da}
+.go-date{color:var(--gold)!important;font-weight:700;font-size:.9rem;letter-spacing:.02em;margin:0 0 .3rem}
+.go-welcome-logo{flex:none;width:84px;height:84px;border-radius:20px;box-shadow:0 0 0 2px rgba(255,255,255,.28),0 6px 16px rgba(0,0,0,.25)}
+[data-bs-theme=dark] .go-welcome{background:linear-gradient(120deg,#4a1626 0%,#7a2640 100%);border:1px solid var(--border);box-shadow:none}
+@media(max-width:575px){.go-welcome{padding:1.25rem;min-height:0}.go-welcome h1{font-size:1.45rem}.go-welcome-logo{width:56px;height:56px;border-radius:14px}}
+
+/* ===== 8. Side panel layout (side panel + top bar) ===== */
+#nav{position:sticky;top:0;z-index:1030}
+.topbar{height:64px;background:var(--card);border-bottom:1px solid var(--border)}
+.topbar .nav-ic{color:var(--text);border-color:var(--border)}
+.topbar .nav-ic:hover,.topbar .nav-ic:focus{color:var(--gold);border-color:var(--gold)}
+/* Page title in the top bar: "DIVEORA | Dashboard" */
+.topbar-title{font-weight:800;font-size:1.15rem;color:var(--text);display:flex;align-items:center;gap:.6rem;min-width:0}
+.topbar-title .tt-brand b{color:var(--gold)}
+.topbar-title .tt-sep{color:var(--muted);font-weight:400}
+/* Logout button in the top bar */
+.user-chip{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:.9rem;background:none;border:0;padding:.2rem .45rem;border-radius:.5rem;color:var(--text)}
+.user-chip:hover,.user-chip:focus-visible,.user-chip.show{background:var(--bg);color:var(--text)}
+.user-pop{min-width:0;width:auto;padding:.5rem .8rem;font-size:.8rem;white-space:nowrap;color:var(--text)}
+/* Side panel: fixed on desktop, slides in from the left on mobile */
+.side{position:fixed;top:0;bottom:0;left:0;width:var(--side-w);background:var(--brand);color:#e6d3da;z-index:1040;display:flex;flex-direction:column;overflow-y:auto;transition:transform .25s}
+[data-bs-theme=dark] .side{background:#1a0d13;border-right:1px solid var(--border)}
+.side-head{display:flex;align-items:center;justify-content:space-between;height:64px;padding:0 1.25rem;border-bottom:1px solid rgba(255,255,255,.1);flex:none}
+.side-brand{display:flex;align-items:center;gap:.55rem;color:#fff;font-weight:800;font-size:1.1rem;text-decoration:none}
+.side-brand b{color:var(--gold)}
+.side-close{background:none;border:1px solid rgba(255,255,255,.25);color:#fff;width:36px;height:36px;border-radius:.6rem}
+.side-nav{flex:1;padding-bottom:1rem}
+.side-label{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:#c4a3b0;font-weight:700;padding:1.1rem 1.5rem .4rem}
+.side-link{display:flex;align-items:center;gap:.7rem;width:calc(100% - 1.5rem);margin:.1rem .75rem;padding:.6rem .85rem;border:0;background:none;border-radius:.6rem;color:#e6d3da;font-weight:600;font-size:.95rem;text-align:left;text-decoration:none}
+.side-link i{font-size:1.1rem}
+.side-link:hover{background:rgba(255,255,255,.08);color:#fff}
+.side-link.active{background:var(--gold);color:var(--brand)}
+.side-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.side-foot{padding:1rem 1.5rem;color:#c4a3b0;border-top:1px solid rgba(255,255,255,.1)}
+.side-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1035}
+@media(min-width:992px){
+  body.has-side{padding-left:var(--side-w);transition:padding-left .25s}
+  body.side-collapsed{padding-left:0}                      /* side panel closed with the menu button */
+  body.side-collapsed .side{transform:translateX(-100%)}
+}
+@media(max-width:575px){.topbar-title{font-size:1rem;gap:.4rem}.topbar-title .tt-brand,.topbar-title .tt-sep{display:none}}
+@media(max-width:991.98px){
+  .side{transform:translateX(-100%)}
+  .side.open{transform:none;box-shadow:0 0 30px rgba(0,0,0,.4)}
+  .side-backdrop.show{display:block}
+  body.side-lock{overflow:hidden}
+}
+/* Round avatar with initials (top bar, Settings, Customers) */
+.avatar{display:inline-flex;align-items:center;justify-content:center;flex:none;width:38px;height:38px;border-radius:50%;background:var(--brand);color:#fff;font-weight:800;font-size:.85rem}
+.avatar-lg{width:52px;height:52px;font-size:1.05rem}
+
+/* ===== 9. Customers page (table / card view, calendar) ===== */
+.cu-card{transition:transform .2s,border-color .2s}
+.cu-card:hover{transform:translateY(-4px);border-color:var(--gold)}
+.cu-stat{background:var(--bg);border:1px solid var(--border);border-radius:.7rem;padding:.5rem}
+#viewSwitch .btn.active{background:var(--gold);color:var(--brand);border-color:var(--gold);font-weight:700}
+.st-past{background:#64748b}
+#calendar{scroll-margin-top:80px}
+
+/* ===== 10. Articles page ===== */
+.art-card{overflow:hidden;transition:transform .2s,border-color .2s}
+.art-card:hover{transform:translateY(-4px);border-color:var(--gold)}
+.art-card svg{display:block;width:100%;height:auto}
+#aImg svg{display:block;width:100%;max-width:420px;height:auto;margin:0 auto;border-radius:.7rem} /* smaller picture in the Read more popup */
+.cat-badge{background:rgba(201,151,63,.18);color:var(--text);font-weight:700}
+#aBody p,#aBody li{line-height:1.7}
+
+/* ===== 11. Cars page: vehicle maintenance ===== */
+.mt-panel{border:1px solid var(--border);border-radius:.8rem;padding:1rem;background:var(--bg)}
+.mt-panel.muted{color:var(--muted)}
+.mt-stat{background:var(--bg);border:1px solid var(--border);border-radius:.7rem;padding:.5rem}
+/* Maintenance stage badges: In progress (red), Completed (plum, waiting for inspection), Closed (grey) */
+.st-progress{background:#b4443c}
+.st-mdone{background:#6d4a7a}
+.st-closed{background:#64748b}
+/* Maintenance note on the car card */
+.car-card .mt-note{color:#b4443c;font-weight:600}
+[data-bs-theme=dark] .car-card .mt-note{color:#e8847c}
+
+/* ===== 12. Pagination (Customers page) ===== */
+.pagination .page-link{color:var(--text);background:var(--card);border-color:var(--border)}
+.pagination .page-item.active .page-link{background:var(--gold);border-color:var(--gold);color:var(--brand);font-weight:700}
+.pagination .page-item.disabled .page-link{color:var(--muted);background:var(--card)}
+.pagination .page-link:focus{box-shadow:0 0 0 .2rem rgba(201,151,63,.4)}
+
+/* ===== 13. Formal refinements (calmer shapes, flat surfaces, restrained gold accent) ===== */
+body{font-weight:400;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,h5{font-weight:600;letter-spacing:0}
+.form-label{font-weight:500}
+/* Cards, forms and buttons: smaller corners, soft edges */
+.card{border-radius:.5rem;box-shadow:0 1px 2px rgba(90,26,46,.05)}
+.btn{border-radius:.4rem}.btn-gold,.btn-brand{font-weight:600}
+[data-bs-theme=dark] .btn-brand{background:#7a2640}
+.form-control,.form-select,.input-group-text{border-radius:.4rem}
+.input-group>:not(:first-child){border-top-left-radius:0;border-bottom-left-radius:0}
+.input-group>:not(:last-child){border-top-right-radius:0;border-bottom-right-radius:0}
+.modal-content,.dropdown-menu{border-radius:.6rem}
+.nav-ic,.foot-ic,.side-close{border-radius:.4rem}
+/* KPI cards: thin gold edge, muted icons */
+.kpi{border-left-width:3px}.kpi .v{font-weight:600}.kpi i{color:var(--muted);font-size:1.35rem}
+/* Status badges: small rectangles instead of pills */
+.badge{border-radius:.3rem;font-weight:600}
+.badge.rounded-pill{border-radius:.3rem!important}
+#nBadge.badge{border-radius:99px!important}
+/* No bouncing cards: hover only changes the border */
+.car-card,.cu-card,.art-card{transition:border-color .2s,box-shadow .2s}
+.car-card:hover,.cu-card:hover,.art-card:hover{transform:none;border-color:var(--gold);box-shadow:0 4px 14px rgba(90,26,46,.08)}
+.price{font-weight:600}
+.table thead th{font-weight:600}
+.cal-cell,.mt-panel,.mt-stat,.cu-stat,.de-toast{border-radius:.4rem}
+.cal-cell{font-weight:600}
+.cal-cell.sel{background:var(--brand);color:#fff}
+.cal-n{border-radius:.3rem}
+/* Welcome banner: flat burgundy, small square logo */
+.go-welcome{border-radius:.6rem;background:var(--brand);box-shadow:none;padding:1.75rem 2rem;min-height:128px}
+.go-welcome h1{font-weight:600}
+.go-date{font-weight:600;letter-spacing:0}
+.go-welcome-logo{width:108px;height:108px;border-radius:22px;box-shadow:none}
+[data-bs-theme=dark] .go-welcome{background:#4a1626}
+@media(max-width:575px){.go-welcome{padding:1.25rem}.go-welcome-logo{width:72px;height:72px;border-radius:16px}}
+/* Side panel: quiet active state with a gold marker */
+.side-brand{font-weight:700;font-size:1rem;letter-spacing:.14em}
+.side-label{text-transform:none;letter-spacing:.02em;font-size:.78rem;font-weight:600}
+.side-link{border-radius:.4rem;font-weight:500}
+.side-link.active{background:rgba(255,255,255,.1);color:#fff;box-shadow:inset 3px 0 0 var(--gold)}
+/* Top bar title and footer wordmark */
+.topbar-title{font-weight:600}
+.topbar-title .tt-brand{font-weight:700;font-size:.95rem;letter-spacing:.14em}
+.de-foot .h5{font-weight:700;font-size:1rem;letter-spacing:.14em}
+.pagination .page-link{border-radius:.4rem}
+/* Logo tile sits on dark backgrounds: thin light ring keeps its edge visible */
+.login-brand img,.side-brand img,.de-foot img,.go-welcome-logo{box-shadow:0 0 0 1px rgba(255,255,255,.35)}
+.login-brand img,.side-brand img,.de-foot img{border-radius:22%}
+.login-brand img{width:68px;height:68px}
+#nBadge.badge{background:var(--gold)!important;color:var(--brand)!important}
+
+/* ===== 14. Bootstrap defaults recoloured to the burgundy and gold theme ===== */
+:root{--bs-link-color-rgb:138,47,75;--bs-link-hover-color-rgb:90,26,46}
+[data-bs-theme=dark]{--bs-link-color-rgb:222,150,170;--bs-link-hover-color-rgb:240,196,208}
+.form-check-input:checked{background-color:var(--brand);border-color:var(--brand)}
+[data-bs-theme=dark] .form-check-input:checked{background-color:var(--gold);border-color:var(--gold)}
+.form-check-input:focus{border-color:var(--gold);box-shadow:0 0 0 .2rem rgba(201,151,63,.4)}
+
+/* ===== Add Car popup (Cars page) ===== */
+.add-prev{width:100%;height:150px;object-fit:cover;border-radius:.4rem;border:1px solid var(--border);background:var(--bg)}
+
+/* ===== Static side panel (no scrolling) and fullscreen button ===== */
+/* The side panel never scrolls on desktop or mobile (no scroll bar, no touch scrolling).
+   On short screens (for example a phone turned sideways) the spacing becomes smaller so every menu item still fits. */
+.side{height:100vh;height:100dvh;overflow:hidden;overscroll-behavior:none;touch-action:none;-webkit-user-select:none;user-select:none}
+.side-nav{min-height:0;overflow:hidden;overscroll-behavior:none}
+.side-nav::-webkit-scrollbar,.side::-webkit-scrollbar{display:none}
+.side-backdrop{touch-action:none}
+@media(max-height:640px){
+  .side-head{height:56px}
+  .side-label{padding:.6rem 1.5rem .2rem}
+  .side-link{padding:.4rem .85rem;font-size:.9rem}
+  .side-foot{padding:.6rem 1.5rem}
+}
+@media(max-height:480px){
+  .side-head{height:48px}
+  .side-label{padding:.35rem 1.5rem .1rem;font-size:.7rem}
+  .side-link{padding:.3rem .8rem;margin:0 .75rem}
+  .side-foot{display:none}
+}
+@media(max-height:400px){
+  .side-link{padding:.2rem .8rem;font-size:.85rem}
+  .side-label{padding:.25rem 1.5rem 0}
+}
+/* Fullscreen button on the login page (top-right corner of the sign-in box) */
+.fs-float{position:absolute;top:16px;right:16px;z-index:20;background:var(--card);border:1px solid var(--border);color:var(--text);width:40px;height:40px;border-radius:.5rem}
+.fs-float:hover,.fs-float:focus-visible{color:var(--gold);border-color:var(--gold)}
+/* ---- Customers: Add booking form, receive payment box and payment receipt ---- */
+.bk-step{font-weight:700;color:var(--brand);margin-bottom:.6rem;padding-bottom:.35rem;border-bottom:1px solid var(--bs-border-color)}
+[data-bs-theme=dark] .bk-step{color:var(--gold)}
+.bk-sum{padding:.7rem .9rem;border-radius:.5rem;background:rgba(201,151,63,.12);border:1px solid rgba(201,151,63,.4)}
+.pay-box{border:1px dashed var(--gold);border-radius:.6rem;background:rgba(201,151,63,.08)}
+/* The receipt is always a white paper with dark text (also in dark mode), so it prints correctly */
+.rc-paper{position:relative;background:#fff;color:#222;border:1px solid #ddd;border-radius:.5rem;padding:1.5rem;font-size:.9rem}
+.rc-head{display:flex;align-items:center;gap:.8rem;border-bottom:3px solid #5a1a2e;padding-bottom:.9rem;margin-bottom:1rem}
+.rc-brand{font-weight:700;font-size:1.25rem;color:#5a1a2e;letter-spacing:.04em}
+.rc-sub{font-size:.75rem;color:#666;line-height:1.4}
+.rc-title{margin-left:auto;text-align:right;font-weight:700;font-size:1.3rem;color:#5a1a2e;line-height:1.1}
+.rc-title small{display:block;font-size:.78rem;font-weight:600;color:#666;margin-top:.25rem}
+.rc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.rc-lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:#8a7a60;font-weight:700;margin-bottom:.2rem}
+.rc-table{width:100%;border-collapse:collapse;margin-bottom:.8rem}
+.rc-table th{background:#f6efe2;color:#5a1a2e;font-size:.78rem;text-transform:uppercase;padding:.5rem .6rem;border-bottom:1px solid #e3d6bb}
+.rc-table td{padding:.6rem;border-bottom:1px solid #eee;vertical-align:top;color:#222}
+.rc-note{font-size:.78rem;color:#666;margin-top:.25rem;line-height:1.45}
+.rc-total{display:flex;justify-content:space-between;align-items:center;background:#5a1a2e;color:#fff;padding:.7rem 1rem;border-radius:.4rem;font-size:1.05rem}
+.rc-total b{color:#fbd48a;font-size:1.25rem}
+.rc-stamp{display:inline-block;transform:rotate(-8deg);margin:.3rem 0 .9rem;border:3px solid rgba(46,125,50,.7);color:rgba(46,125,50,.8);font-weight:800;font-size:1.5rem;letter-spacing:.2em;padding:.05rem .9rem;border-radius:.4rem}
+.rc-foot{margin-top:1rem;font-size:.72rem;color:#777;text-align:center;line-height:1.5;border-top:1px dashed #ccc;padding-top:.7rem}
+@media(max-width:575px){.rc-grid{grid-template-columns:1fr}.rc-paper{padding:1rem}.rc-stamp{display:inline-block;transform:rotate(-8deg);margin:.3rem 0 .9rem;border:3px solid rgba(46,125,50,.7);color:rgba(46,125,50,.8);font-weight:800;font-size:1.5rem;letter-spacing:.2em;padding:.05rem .9rem;border-radius:.4rem}}
+/* Print: only the receipt is printed (everything else on the page is hidden) */
+@media print{
+  body.print-rc{padding:0!important;margin:0!important;background:#fff!important;overflow:visible!important}
+  body.print-rc>*:not(#rcModal){display:none!important}
+  body.print-rc .modal-backdrop{display:none!important}
+  body.print-rc #rcModal{position:static!important;display:block!important;overflow:visible!important;opacity:1!important;height:auto!important}
+  body.print-rc #rcModal .modal-dialog{margin:0 auto!important;max-width:100%!important;min-height:0!important;transform:none!important;display:block!important;height:auto!important}
+  body.print-rc #rcModal .modal-content{border:0!important;box-shadow:none!important;background:#fff!important;max-height:none!important;overflow:visible!important}
+  body.print-rc #rcModal .modal-header,body.print-rc #rcModal .modal-footer{display:none!important}
+  body.print-rc #rcModal .modal-body{overflow:visible!important;padding:0!important}
+  body.print-rc .rc-paper{border:0!important;border-radius:0!important;padding:0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body.print-rc .rc-table th,body.print-rc .rc-total{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  @page{margin:14mm}
+}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+<!-- Metadata -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Manage DIVEORA customers in table or card view: search, edit, delete, booking history and a booking calendar.">
+<meta name="author" content="DIVEORA">
+<meta name="keywords" content="car rental, DIVEORA, customers, bookings, calendar, dashboard">
+<meta name="theme-color" content="#5a1a2e">
+<!-- Open Graph (social sharing) -->
+<meta property="og:site_name" content="DIVEORA">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Customers | DIVEORA">
+<meta property="og:description" content="Manage DIVEORA customers in table or card view: search, edit, delete, booking history and a booking calendar.">
+<title>Customers | DIVEORA</title>
+<link rel="icon" href="images/logo.svg" type="image/svg+xml">
+<!-- Bootstrap 5, Bootstrap Icons, Google Font -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<!-- Apply the saved theme before the page is drawn (no white flash in dark mode) -->
+<script>try{document.documentElement.setAttribute("data-bs-theme",localStorage.getItem("de_theme")||"light")}catch(e){}</script>
+</head>
+<body data-page="customers">
+<div id="nav"></div>
+<main class="container-xxl py-4" id="main">
+  <!-- Page title, view switch (table / cards), calendar link and export -->
+  <div class="page-head">
+    <div><h1 class="h3 mb-1">Customers</h1><p class="text-muted mb-0" id="count"></p></div>
+    <div class="d-flex gap-2 flex-wrap">
+      <div class="btn-group" id="viewSwitch" role="group" aria-label="Choose view">
+        <button class="btn btn-outline-secondary active" data-v="table" aria-pressed="true"><i class="bi bi-table me-1"></i>Table</button>
+        <button class="btn btn-outline-secondary" data-v="cards" aria-pressed="false"><i class="bi bi-grid-3x3-gap-fill me-1"></i>Cards</button>
+      </div>
+      <a class="btn btn-outline-secondary" href="#calendar"><i class="bi bi-calendar3 me-1"></i>Calendar</a>
+      <button id="csv" class="btn btn-gold"><i class="bi bi-download me-1"></i>Export CSV</button>
+    </div>
+  </div>
+  <!-- Search, filter, sort and refresh -->
+  <section class="card p-3 mb-3" aria-label="Search and filters"><div class="row g-2">
+    <div class="col-12 col-md-4"><input id="q" class="form-control" placeholder="Search by name, phone, email or car" aria-label="Search customers"></div>
+    <div class="col-6 col-md-2"><select id="fStatus" class="form-select" aria-label="Customer status"><option value="">All status</option><option>Active</option><option>Upcoming</option><option>Past</option></select></div>
+    <div class="col-6 col-md-2"><select id="sort" class="form-select" aria-label="Sort customers"><option value="name">Name (A-Z)</option><option value="spent">Highest spending</option><option value="count">Most bookings</option><option value="recent">Most recent pick-up</option></select></div>
+    <!-- Add booking: opens a form so the admin can book a car for a new or existing customer -->
+    <div class="col-9 col-md-3"><button id="addBk" class="btn btn-outline-secondary w-100 text-nowrap" type="button"><i class="bi bi-calendar-plus me-1"></i>Add booking</button></div>
+    <div class="col-3 col-md-1"><button id="refresh" class="btn btn-outline-secondary w-100" title="Refresh" aria-label="Refresh"><i class="bi bi-arrow-clockwise"></i></button></div></div></section>
+  <!-- Table view (filled by js/customers.js) -->
+  <section class="card p-3 mb-3" id="tableView" aria-label="Customer table">
+    <div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead><tr><th>Customer</th><th class="d-none d-lg-table-cell">Phone</th><th class="d-none d-xl-table-cell">Email</th><th>Bookings</th><th>Total spent</th><th class="d-none d-md-table-cell">Last pick-up</th><th>Status</th><th>Action</th></tr></thead><tbody id="tb"></tbody></table></div>
+  </section>
+  <!-- Card view (filled by js/customers.js) -->
+  <section class="mb-3 d-none" id="cardView" aria-label="Customer cards"><div class="row g-3" id="cardGrid"></div></section>
+  <!-- Pagination: Previous, 1 2 3 ..., Next -->
+  <nav class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4" aria-label="Customer pages">
+    <small class="text-muted" id="pgInfo"></small>
+    <ul class="pagination pagination-sm mb-0" id="pg"></ul>
+  </nav>
+  <!-- Charts -->
+  <section class="row g-3" aria-label="Customer analytics">
+    <div class="col-12 col-md-6 col-xl-4"><div class="card p-3 h-100"><div class="card-h">Payment status</div><div class="card-s">Paid, pending and refunded bookings</div><div class="chart-box"><canvas id="cPay"></canvas></div></div></div>
+    <div class="col-12 col-md-6 col-xl-4"><div class="card p-3 h-100"><div class="card-h">Top customers</div><div class="card-s">Total spent in RM</div><div class="chart-box"><canvas id="cCust"></canvas></div></div></div>
+    <div class="col-12 col-xl-4"><div class="card p-3 h-100"><div class="card-h">Rental length</div><div class="card-s">How many days customers rent for</div><div class="chart-box"><canvas id="cDays"></canvas></div></div></div>
+  </section>
+  <!-- Booking calendar -->
+  <h2 class="h4 mt-4 mb-1" id="calendar">Booking calendar</h2>
+  <p class="text-muted">Select a day to see which customers have a car on rent.</p>
+  <section class="row g-3" aria-label="Booking calendar">
+    <div class="col-12 col-lg-8"><div class="card p-3">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><h3 class="h5 mb-0" id="calTitle"></h3>
+        <div class="btn-group"><button id="prevM" class="btn btn-outline-secondary" aria-label="Previous month"><i class="bi bi-chevron-left"></i></button><button id="todayM" class="btn btn-gold">Today</button><button id="nextM" class="btn btn-outline-secondary" aria-label="Next month"><i class="bi bi-chevron-right"></i></button></div></div>
+      <div class="cal-grid mb-1"><div class="cal-dow">Sun</div><div class="cal-dow">Mon</div><div class="cal-dow">Tue</div><div class="cal-dow">Wed</div><div class="cal-dow">Thu</div><div class="cal-dow">Fri</div><div class="cal-dow">Sat</div></div>
+      <div class="cal-grid" id="calGrid"></div></div></div>
+    <div class="col-12 col-lg-4"><div class="card p-3 h-100"><div class="card-h" id="dayTitle"></div><div class="card-s">Rentals on this day</div><div id="dayList"></div></div></div>
+    <div class="col-12"><div class="card p-3 h-100"><div class="card-h">Cars on rent per day</div><div class="card-s">Daily demand for the selected month</div><div class="chart-box"><canvas id="cCal"></canvas></div></div></div>
+  </section>
+</main>
+<!-- Customer details popup (View) -->
+<div class="modal fade" id="cuModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="cuTitle"></h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+  <div class="modal-body" id="cuBody"></div>
+  <div class="modal-footer"><button class="btn btn-gold" data-bs-dismiss="modal">Close</button></div></div></div></div>
+<!-- Edit customer popup -->
+<div class="modal fade" id="cuEdit" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="eTitle">Edit customer</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+  <div class="modal-body">
+    <div id="eErr" class="alert alert-danger small d-none" role="alert"></div>
+    <div class="mb-3"><label class="form-label fw-semibold" for="eName">Full name</label><input id="eName" class="form-control" maxlength="40" autocomplete="off"></div>
+    <div class="mb-3"><label class="form-label fw-semibold" for="ePhone">Phone</label><input id="ePhone" class="form-control" placeholder="012-3456789" autocomplete="off"></div>
+    <div><label class="form-label fw-semibold" for="eEmail">Email</label><input id="eEmail" type="email" class="form-control" placeholder="name@mail.com" autocomplete="off"></div></div>
+  <div class="modal-footer"><button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-gold" id="eSave">Save changes</button></div></div></div></div>
+<!-- Delete customer popup -->
+<div class="modal fade" id="cuDel" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="dTitle">Delete customer</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+  <div class="modal-body" id="dBody"></div>
+  <div class="modal-footer"><button class="btn btn-outline-secondary" id="dCancel" data-bs-dismiss="modal">Cancel</button><button class="btn btn-danger" id="dOk">Delete</button></div></div></div></div>
+<!-- Add booking popup (new or existing customer, car, dates and payment) -->
+<div class="modal fade" id="bkModal" tabindex="-1" aria-labelledby="bkTitle" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="bkTitle"><i class="bi bi-calendar-plus me-2"></i>Add booking</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+  <div class="modal-body">
+    <div id="bErr" class="alert alert-danger small d-none" role="alert"></div>
+    <h6 class="bk-step">1. Customer</h6>
+    <div class="row g-2 mb-4">
+      <div class="col-12"><label class="form-label fw-semibold" for="bCust">Customer</label><select id="bCust" class="form-select"></select><div class="form-text">Choose <b>+ New customer</b> for someone who is not in the list yet, or pick an existing customer.</div></div>
+      <div class="col-12 col-md-4"><label class="form-label" for="bName">Full name</label><input id="bName" class="form-control" maxlength="40" autocomplete="off"></div>
+      <div class="col-12 col-md-4"><label class="form-label" for="bPhone">Phone</label><input id="bPhone" class="form-control" placeholder="012-3456789" autocomplete="off"></div>
+      <div class="col-12 col-md-4"><label class="form-label" for="bEmail">Email</label><input id="bEmail" type="email" class="form-control" placeholder="name@mail.com" autocomplete="off"></div>
+    </div>
+    <h6 class="bk-step">2. Car and rental period</h6>
+    <div class="row g-2 mb-2">
+      <div class="col-12 col-md-7"><label class="form-label" for="bCar">Car</label><select id="bCar" class="form-select"></select></div>
+      <div class="col-12 col-md-5"><label class="form-label" for="bLoc">Pick-up branch</label><select id="bLoc" class="form-select"></select></div>
+      <div class="col-7 col-md-3"><label class="form-label" for="bPick">Pick-up date</label><input id="bPick" type="date" class="form-control"></div>
+      <div class="col-5 col-md-3"><label class="form-label" for="bPickT">Pick-up time</label><select id="bPickT" class="form-select"></select></div>
+      <div class="col-7 col-md-3"><label class="form-label" for="bRet">Return date</label><input id="bRet" type="date" class="form-control"></div>
+      <div class="col-5 col-md-3"><label class="form-label" for="bRetT">Return time</label><select id="bRetT" class="form-select"></select></div>
+    </div>
+    <div class="bk-sum mb-4" id="bSum" aria-live="polite"></div>
+    <h6 class="bk-step">3. Payment</h6>
+    <div class="row g-2">
+      <div class="col-12 col-md-6"><label class="form-label" for="bPayStat">Payment status</label><select id="bPayStat" class="form-select"><option value="Paid">Paid now</option><option value="Pending">Pay later (pending)</option></select></div>
+      <div class="col-12 col-md-6"><label class="form-label" for="bMethod">Payment method</label><select id="bMethod" class="form-select"></select></div>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-gold" id="bSave"><i class="bi bi-check-lg me-1"></i>Save booking</button></div></div></div></div>
+<!-- Payment receipt popup (printable) -->
+<div class="modal fade" id="rcModal" tabindex="-1" aria-labelledby="rcTitle" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="rcTitle"><i class="bi bi-receipt me-2"></i>Payment receipt</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+  <div class="modal-body" id="rcBody"></div>
+  <div class="modal-footer"><button class="btn btn-outline-secondary me-auto" id="rcBack"><i class="bi bi-arrow-left me-1"></i>Back</button><button class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button><button class="btn btn-gold" id="rcPrint"><i class="bi bi-printer me-1"></i>Print receipt</button></div></div></div></div>
+<div id="foot"></div>
+<!-- Scripts: Bootstrap, Chart.js, then app code -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/customers.js"></script>
+</body>
+</html>

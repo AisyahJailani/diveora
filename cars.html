@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+<!-- Metadata -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Browse the DIVEORA fleet, manage vehicle maintenance and view maintenance history.">
+<meta name="author" content="DIVEORA">
+<meta name="keywords" content="car rental, DIVEORA, fleet, vehicle maintenance, maintenance history">
+<meta name="theme-color" content="#5a1a2e">
+<!-- Open Graph (social sharing) -->
+<meta property="og:site_name" content="DIVEORA">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cars | DIVEORA">
+<meta property="og:description" content="Browse the DIVEORA fleet, manage vehicle maintenance and view maintenance history.">
+<title>Cars | DIVEORA</title>
+<link rel="icon" href="images/logo.svg" type="image/svg+xml">
+<!-- Bootstrap 5, Bootstrap Icons, Google Font -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<!-- Apply the saved theme before the page is drawn (no white flash in dark mode) -->
+<script>try{document.documentElement.setAttribute("data-bs-theme",localStorage.getItem("de_theme")||"light")}catch(e){}</script>
+</head>
+<body data-page="cars">
+<div id="nav"></div>
+<main class="container-xxl py-4" id="main">
+  <div class="page-head"><div><h1 class="h3 mb-1">Fleet</h1><p class="text-muted mb-0" id="count"></p></div></div>
+  <!-- Fleet summary (filled by js/cars.js) -->
+  <section class="row g-3 mb-3" id="kpis" aria-label="Fleet summary"></section>
+  <!-- Search + filters -->
+  <section class="card p-3 mb-3"><div class="row g-2">
+    <div class="col-12 col-md-4"><input id="q" class="form-control" placeholder="Search car name" aria-label="Search car name"></div>
+    <div class="col-6 col-md-2"><select id="fType" class="form-select" aria-label="Car type"><option value="">All types</option><option>Sedan</option><option>SUV</option><option>MPV</option><option>Hatchback</option></select></div>
+    <div class="col-6 col-md-2"><select id="fStatus" class="form-select" aria-label="Status"><option value="">All status</option><option>Available</option><option>Rented</option><option>Maintenance</option></select></div>
+    <div class="col-9 col-md-3"><button id="addCar" class="btn btn-outline-secondary w-100" type="button"><i class="bi bi-plus-lg me-1"></i>Add Car</button></div>
+    <div class="col-3 col-md-1"><button id="reset" class="btn btn-outline-secondary w-100" aria-label="Reset filters"><i class="bi bi-arrow-counterclockwise"></i></button></div></div></section>
+  <!-- Car grid (filled by js/cars.js). Click a car to open details and maintenance actions. -->
+  <section class="row g-3 mb-4" id="carGrid" aria-label="Car list"></section>
+  <!-- Charts -->
+  <section class="row g-3 mb-4">
+    <div class="col-12 col-xl-8"><div class="card p-3 h-100"><div class="card-h">Daily price per model</div><div class="card-s">Gold bars are SUVs and MPVs</div><div class="chart-box"><canvas id="cPrice"></canvas></div></div></div>
+    <div class="col-12 col-xl-4"><div class="card p-3 h-100"><div class="card-h">Revenue by car type</div><div class="card-s">Share of total revenue</div><div class="chart-box"><canvas id="cTypeRev"></canvas></div></div></div>
+  </section>
+  <!-- Maintenance log: every record of every car -->
+  <section class="card p-3" aria-label="Maintenance log">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <div><h2 class="h5 mb-0">Maintenance log</h2><small class="text-muted" id="mtCount"></small></div>
+      <select id="fMt" class="form-select w-auto" aria-label="Filter maintenance by stage"><option value="">All stages</option><option>In progress</option><option>Completed</option><option>Closed</option></select></div>
+    <div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead><tr><th>ID</th><th>Car</th><th>Type</th><th class="d-none d-md-table-cell">Period</th><th>Cost</th><th>Stage</th><th>Action</th></tr></thead><tbody id="mtBody"></tbody></table></div>
+  </section>
+</main>
+<!-- Car popup: details, maintenance form, complete, set available and history (filled by js/cars.js) -->
+<div class="modal fade" id="carModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="mTitle"></h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+  <div class="modal-body" id="mBody"></div>
+  <div class="modal-footer flex-wrap" id="mFoot"></div></div></div></div>
+<!-- Delete maintenance record popup (opened by the Delete button in the Maintenance log, filled by js/cars.js) -->
+<div class="modal fade" id="mtDel" tabindex="-1" aria-labelledby="mdTitle" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="mdTitle">Delete maintenance record</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+  <div class="modal-body" id="mdBody"></div>
+  <div class="modal-footer"><button class="btn btn-outline-secondary" id="mdCancel" data-bs-dismiss="modal">Cancel</button><button class="btn btn-danger" id="mdOk">Delete record</button></div></div></div></div>
+<!-- Add Car popup: new cars are saved in the browser and shown on every page (filled by js/cars.js) -->
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addTitle" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="addTitle"><i class="bi bi-car-front-fill me-2 text-warning"></i>Add a new car</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+  <div class="modal-body"><form id="addForm" novalidate>
+    <div id="aErr" class="alert alert-danger small d-none" role="alert"></div>
+    <div class="row g-3">
+      <div class="col-12 col-md-7"><label class="form-label fw-semibold" for="aName">Car name</label><input id="aName" class="form-control" maxlength="40" placeholder="e.g. Perodua Bezza" autocomplete="off"></div>
+      <div class="col-6 col-md-5"><label class="form-label fw-semibold" for="aType">Car type</label><select id="aType" class="form-select"><option>Sedan</option><option>SUV</option><option>MPV</option><option>Hatchback</option></select></div>
+      <div class="col-6 col-md-4"><label class="form-label fw-semibold" for="aPlate">Plate number</label><input id="aPlate" class="form-control text-uppercase" maxlength="12" placeholder="e.g. VAB 1234" autocomplete="off"></div>
+      <div class="col-3 col-md-3"><label class="form-label fw-semibold" for="aSeats">Seats</label><input id="aSeats" type="number" min="2" max="15" step="1" value="5" class="form-control"></div>
+      <div class="col-9 col-md-5"><label class="form-label fw-semibold" for="aPrice">Price per day (RM)</label><input id="aPrice" type="number" min="1" step="1" class="form-control" placeholder="e.g. 150"></div>
+      <div class="col-12 col-md-6"><label class="form-label fw-semibold" for="aImg">Car image</label><select id="aImg" class="form-select"></select>
+        <label class="form-label fw-semibold mt-3" for="aFile">Or upload your own photo (optional)</label><input id="aFile" type="file" class="form-control" accept="image/jpeg,image/png,image/webp"><div class="form-text">JPG, PNG or WEBP. The photo is resized and saved in this browser.</div></div>
+      <div class="col-12 col-md-6"><div class="form-label fw-semibold">Preview</div><img id="aPrev" class="add-prev" src="images/hero.svg" alt="Preview of the car image"></div>
+    </div>
+    <p class="small text-muted mt-3 mb-0">A new car starts as <b>Available</b>. It is counted in the fleet summary, the Dashboard and Analytics.</p>
+  </form></div>
+  <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" form="addForm" class="btn btn-gold" id="aSave">Add car</button></div></div></div></div>
+<div id="foot"></div>
+<!-- Scripts: Bootstrap, Chart.js, then app code -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/cars.js"></script>
+</body>
+</html>
