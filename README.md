@@ -5,8 +5,8 @@ IMS566 Advanced Web Design Development and Content Management (Individual Assign
 DIVEORA is a front-end car rental management prototype. It shows fleet status, bookings, analytics and a booking calendar with charts and tables. Two colours are used: burgundy `#5a1a2e` and gold `#c9973f`.
 
 ## Project Links
-- Live website (GitHub Pages): https://USERNAME.github.io/diveora/
-- GitHub repository: https://github.com/USERNAME/diveora
+- Live website (GitHub Pages): https://aisyahjailani.github.io/diveora/ 
+- GitHub repository: https://github.com/AisyahJailani/diveora 
 
 ## Features
 - **Login page** ("Welcome Back, Admin") with hardcoded credentials and error feedback (no register page). A light / dark button sits in the top-left corner of the sign-in box. Logged-out users are sent back to the login page.
